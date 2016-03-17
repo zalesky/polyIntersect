@@ -23,23 +23,54 @@ function intersects(fig1, fig2) {
         }
     };
 
-function getCoordinatesOfCrossing (a1,a2,b1,b2) { //input {x:num,y:num} {x:num,y:num}; return false if not cross else {x:num,y:num}
-    var x=((a1.x*a2.y-a2.x*a1.y)*( b2.x-b1.x)-(b1.x*b2.y- b2.x*b1.y)*(a2.x-a1.x))/((a1.y-a2.y)*( b2.x-b1.x)-(b1.y-b2.y)*(a2.x-a1.x)),
-        y=((b1.y-b2.y)*x-(b1.x*b2.y- b2.x*b1.y))/( b2.x-b1.x);
-        return x+':'+y;
 
+    function getCoordinatesOfCrossing(a1, a2, b1, b2) {
 
-(((a1.x<=x)and(a2.x>=x)and(b1.x<=x)and(b2.x >=x))or((a1.y<=y)and(a2.y>=y)and(b1.y<=y) and(b2.y>=y))) ? true:false;//across:not across
+        var denom, a, b, num1, num2, x, y;
+        denom = ((b2.y - b1.y) * (a2.x - a1.x)) - ((b2.x - b1.x) * (a2.y - a1.y));
+        if (denom == 0) return false;
+        a = a1.y - b1.y;
+        b = a1.x - b1.x;
+        num1 = ((b2.x - b1.x) * a) - ((b2.y - b1.y) * b);
+        num2 = ((a2.x - a1.x) * a) - ((a2.y - a1.y) * b);
+        a = num1 / denom;
+        b = num2 / denom;
 
-k1=(a2.x-a1.x)/(a2.y-a1.y);
-k2=(b2.x-b1.x)/(b2.y-b1.y);
-k1==k2?true:false; //paralel:not paralel
+        x = a1.x + (a * (a2.x - a1.x));
+        y = a1.y + (a * (a2.y - a1.y));
 
-}
+        if ((a > 0 && a < 1) && (b > 0 && b < 1)) {
+            return {
+                x: x,
+                y: y
+            };
+        } else {
+            return false;
+        }
+    }
+    function createArrWithCrossCoord(fig1,fig2){
+        var arr=[],
+            xy;
+        poly1=fig1.slice();
+        poly1.push(fig1[0]);
+        poly2=fig2.slice();
+        poly2.push(fig2[0]);
+
+        for (var i = fig1.length - 1; i > 0; i-=1) {
+            for (var j = fig2.length - 1; j > 0; j -= 1) {
+                xy=getCoordinatesOfCrossing(fig1[i],fig1[i-1],fig2[j],fig2[j-1]);
+                if (xy)arr.push(xy);    
+            };
+        };
+        console.dir(arr);
+
+    }
+
 
 
     changePropFigVerticesInOthFig(fig1, fig2);
     changePropFigVerticesInOthFig(fig2, fig1);
+    createArrWithCrossCoord(fig1,fig2);
 
 
     /*	for (var i = 0; i < examples.first.length; i++) {
@@ -48,7 +79,7 @@ k1==k2?true:false; //paralel:not paralel
      for (var i = 0; i < examples.second.length; i++) {
      examples.second[i].inPoly = notIsInPolygon(examples.second[i].x, examples.second[i].y, examples.first);
      }*/
-    console.dir(examples)
+    
 
 
     return [
@@ -67,7 +98,7 @@ k1==k2?true:false; //paralel:not paralel
         }, {
             x: 60,
             y: 150
-        },],
+        }, ],
         [{
             x: 270,
             y: 240
@@ -83,7 +114,7 @@ k1==k2?true:false; //paralel:not paralel
         }, {
             x: 240,
             y: 180
-        },],
+        }, ],
         [{
             x: 150,
             y: 180
