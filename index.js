@@ -1,5 +1,5 @@
-// пример многоугольников
-/*var examples = {
+// examples
+var examples = {
   first: [{
     x: 60,
     y: 60
@@ -66,18 +66,21 @@
     y: 210
   }]
 
-};*/
+};
 
-var examples = {//трикутники
+/*var examples = {//triangles
   first: [{x:20,y:20},{x:20,y:90},{x:60,y:50}],
   second:[{x:100,y:20},{x:100,y:100},{x:30,y:50}]
-}
+}*/
 
-/*var examples = {//чотирикутники
+/*var examples = {//quadrangle
   first: [{x:20,y:20},{x:20,y:100},{x:70,y:70},{x:70,y:40}],
   second:[{x:100,y:20},{x:100,y:100},{x:30,y:70} ,{x:30,y:30}]
 }*/
-
+/*var examples = {//f1 in f2
+  first: [{x:10,y:50},{x:50,y:10},{x:100,y:50},{x:50,y:100}],
+  second:[{x:15,y:55},{x:55,y:15},{x:80,y:40} ,{x:40,y:80}]
+}*/
 function drawPath(data, container, color) {
   var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   var str = 'M' + data[0].x + ',' + data[0].y + ' ';
@@ -96,6 +99,7 @@ function drawDots(x, y, container) {
   var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   text.setAttributeNS(null, "x", x);
   text.setAttributeNS(null, "y", y);
+  text.setAttributeNS(null, "style", 'font-size: 10px;');
   text.appendChild(document.createTextNode(x + ';' + y));
   container.appendChild(text);
 };

@@ -39,49 +39,62 @@ function intersects(fig1, fig2) {
         x = a1.x + (a * (a2.x - a1.x));
         y = a1.y + (a * (a2.y - a1.y));
 
-        if ((a > 0 && a < 1) && (b > 0 && b < 1)) {
+        if ((a >= 0 && a < 1) && (b >= 0 && b < 1)) {
             return {
                 x: x,
-                y: y
+                y: y,
             };
         } else {
             return false;
         }
     }
-    function createArrWithCrossCoord(fig1,fig2){
-        var arr=[],
+
+    function createArrWithCrossCoord(fig1, fig2) {
+        var arr = [],
             xy;
-        poly1=fig1.slice();
+        poly1 = fig1.slice();
         poly1.push(fig1[0]);
-        poly2=fig2.slice();
+        poly2 = fig2.slice();
         poly2.push(fig2[0]);
 
-        for (var i = fig1.length - 1; i > 0; i-=1) {
-            for (var j = fig2.length - 1; j > 0; j -= 1) {
-                xy=getCoordinatesOfCrossing(fig1[i],fig1[i-1],fig2[j],fig2[j-1]);
-                if (xy)arr.push(xy);    
+        for (var i = poly1.length - 1; i > 0; i -= 1) {
+            for (var j = poly2.length - 1; j > 0; j -= 1) {
+                xy = getCoordinatesOfCrossing(poly1[i], poly1[i - 1], poly2[j], poly2[j - 1]);
+                if (xy) {
+                    xy.prev1=i-1;
+                    xy.next1=i;
+                    xy.prev2=j-1;
+                    xy.next2=j;
+                    arr.push(xy);
+                }
             };
         };
-        console.dir(arr);
-
+        return arr;
     }
 
-
+    function figInOthFig(fig) {
+        return fig.every(isTrue)&&fig
+        function isTrue(n) {
+            return n.inPoly
+        }
+    }
 
     changePropFigVerticesInOthFig(fig1, fig2);
     changePropFigVerticesInOthFig(fig2, fig1);
-    createArrWithCrossCoord(fig1,fig2);
+    var dotsOfcross = createArrWithCrossCoord(fig1, fig2);
+    if (dotsOfcross.length == 0) {
+       return figInOthFig(fig1)||figInOthFig(fig2)||[];
+    };
 
+/*console.log(dotsOfcross);
+return null*/
 
-    /*	for (var i = 0; i < examples.first.length; i++) {
-     examples.first[i].inPoly = notIsInPolygon(examples.first[i].x, examples.first[i].y, examples.second);
-     }
-     for (var i = 0; i < examples.second.length; i++) {
-     examples.second[i].inPoly = notIsInPolygon(examples.second[i].x, examples.second[i].y, examples.first);
-     }*/
-    
+    var arr=[];
+    for (var i = 0; i<dotsOfcross.length; i+=1) {
+        dotsOfcross[i]
+    };
 
-
+ 
     return [
         [{
             x: 60,
