@@ -104,6 +104,7 @@ function intersects(fig1, fig2) { // return arr with poly's
                 };
             //#todo знайти точку пересічення з fig1, мабуть починаючи з dotPoly1 і проти годинникової, щоб зійтись з точкою входу.
             // точки пересічення які є в масиві з пересіченними objWithCrossDotsWhatWeSaw виключаєм
+            //може пересікатись і не лежати всередині
             };
        
         return arr;
