@@ -1,5 +1,21 @@
-function intersects(fig1, fig2) {
-    // return arr with poly's
+function intersects(fig1, fig2) { // return arr with poly's
+    'use strict'
+
+    var poly1 = fig1.slice();
+    poly1.push(poly1[0]);
+    var poly2 = fig2.slice();
+    poly2.push(poly2[0]);
+
+    function isHoverHand(poly) {
+        if (poly[1].x === poly[0].x) return true;
+        return (poly[1].x - poly[0].x) / (poly[1].y - poly[0].y) < (poly[poly.length - 1].x - poly[poly.length - 2].x) / (poly[poly.length - 1].y - poly[poly.length - 2].y);
+    };
+    //normilize poly's to HoverHand direction
+    if (!isHoverHand(poly1)) poly1.reverse();
+    if (!isHoverHand(poly2)) poly2.reverse();
+
+
+
 
     function inPolygon(x, y, polygon) {
         var npol = polygon.length,
@@ -17,9 +33,9 @@ function intersects(fig1, fig2) {
 
 
 
-    function changePropFigVerticesInOthFig(fig1, fig2) { //is First Fig dotes in second Fig? then change options Fig[i].inPoly false:true
-        for (var i = 0; i < fig1.length; i++) {
-            fig1[i].inPoly = inPolygon(fig1[i].x, fig1[i].y, fig2);
+    function changePropFigVerticesInOthFig(poly1, poly2) { //is First Fig dotes in second Fig? then change options Fig[i].inPoly false:true
+        for (var i = 0; i < poly1.length; i++) {
+            poly1[i].inPoly = inPolygon(poly1[i].x, poly1[i].y, poly2);
         }
     };
 
@@ -49,70 +65,109 @@ function intersects(fig1, fig2) {
         }
     }
 
-    function createArrWithCrossCoord(fig1, fig2) {
+    function createArrWithCrossCoord(poly1, poly2) {
         var arr = [],
             xy;
-        poly1 = fig1.slice();
-        poly1.push(fig1[0]);
-        poly2 = fig2.slice();
-        poly2.push(fig2[0]);
-
-        for (var i = poly1.length - 1; i > 0; i -= 1) {
-            for (var j = poly2.length - 1; j > 0; j -= 1) {
-                xy = getCoordinatesOfCrossing(poly1[i], poly1[i - 1], poly2[j], poly2[j - 1]);
+        for (var i = 0; i < poly1.length - 1; i += 1) {
+            for (var j = 0; j < poly2.length - 1; j += 1) {
+                xy = getCoordinatesOfCrossing(poly1[i], poly1[i + 1], poly2[j], poly2[j + 1]);
                 if (xy) {
-                    xy.prev1=i-1;
-                    xy.next1=i;
-                    xy.prev2=j-1;
-                    xy.next2=j;
+                    alert(j)
+                    xy.dotPoly1 = i;
+                    xy.dotPoly2 = j;
+                    poly1[i].cross = [];
+                    poly1[i].cross.push(xy);
+                    poly2[j].cross = [];
+                    poly2[j].cross.push(xy);
                     arr.push(xy);
+                    /*out.innerHTML+=xy.x+':'+xy.y+';';*/
+                    drawCircl(xy, document.querySelector('svg.base'))
+                    console.log(xy)
                 }
             };
         };
+        objWithResults = {};
+        objWithCrossDotsWhatWeSaw = {};
+
+        function addFinalObj(currentDot, dotPoly1, dotPoly2) {
+            if (objWithResults[dotPoly1 + 'x' + dotPoly2]) return;
+            //there is no such Polynom of A^B, so add
+            objWithResults[dotPoly1 + 'x' + dotPoly2] = [currentDot];
+            objWithCrossDotsWhatWeSaw[dotPoly1 + 'x' + dotPoly2] = true;
+            //ми на j
+            var k = poly2[dotPoly2] - poly2[dotPoly2 + 1], //треба знати куди рухатись(k) і з якої точки(numOfVertex)
+                numOfVertex = poly2[dotPoly2].inPoly ? dotPoly2 : dotPoly2 + 1; //num це та яка всередині
+            objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex]); //додали вершину
+            while (poly2[numOfVertex + k].inPoly) {
+                k += k;
+                objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex + k);
+                };
+            //#todo знайти точку пересічення з fig1, мабуть починаючи з dotPoly1 і проти годинникової, щоб зійтись з точкою входу.
+            // точки пересічення які є в масиві з пересіченними objWithCrossDotsWhatWeSaw виключаєм
+            //може пересікатись і не лежати всередині
+            };
+       
         return arr;
-    }
+    };
 
     function figInOthFig(fig) {
-        return fig.every(isTrue)&&fig
+        return fig.every(isTrue) && fig
+
         function isTrue(n) {
             return n.inPoly
         }
-    }
+    };
 
-    changePropFigVerticesInOthFig(fig1, fig2);
-    changePropFigVerticesInOthFig(fig2, fig1);
-    var dotsOfcross = createArrWithCrossCoord(fig1, fig2);
+    changePropFigVerticesInOthFig(poly1, poly2);
+    changePropFigVerticesInOthFig(poly2, poly1);
+    var dotsOfcross = createArrWithCrossCoord(poly1, poly2);
     if (dotsOfcross.length == 0) {
-       return figInOthFig(fig1)||figInOthFig(fig2)||[];
+        return figInOthFig(poly1) || figInOthFig(poly2) || [];
     };
 
-/*console.log(dotsOfcross);
-return null*/
+    function createArrWithResults() {
+        var objWithResults = {},
+            nameOfCross;
 
-    var arr=[];
-    for (var i = 0; i<dotsOfcross.length; i+=1) {
-        dotsOfcross[i]
+        function walkThroghDots() {
+
+        }
     };
 
- 
-   /* return [
-        [{x: 60, y: 240}, 
-        { x: 90, y: 240}, 
-        { x: 120, y: 180}, 
-        { x: 90,  y: 90}, 
-        { x: 60, y: 150}, ],
-        [
-        { x: 270, y: 240 }, 
-        { x: 300, y: 240}, 
-        { x: 300, y: 150 }, 
-        { x: 270, y: 90 }, 
-        { x: 240, y: 180 },],
-        [
-        { x: 150, y: 180 }, 
-        { x: 180, y: 240 }, 
-        { x: 210, y: 180 }, 
-        { x: 210, y: 90  }, 
-        { x: 180, y: 60 }, 
-        { x: 150, y: 90  }]
+
+
+    for (var i = 0; i < dotsOfcross.length; i++) {
+        nameOfCross = dotsOfcross[i].dotPoly1 + 'x' + dotsOfcross[i].dotPoly2;
+        if (!objWithResults[nameOfCross]) {
+            objWithResults[nameOfCross] = [];
+            objWithResults[nameOfCross].push({
+                x: dotsOfcross[i].x,
+                y: dotsOfcross[i].y
+            });
+
+            /*if (poly2[dotsOfcross.dotPoly2].inPoly) {} else{};*/
+        } else {
+
+        };
+    };
+
+
+    /*console.log(dotsOfcross);*/
+    return null
+
+    var arr = [];
+    for (var i = 0, j = 0; i < dotsOfcross.length; i += 1) {
+        arr[j].push({
+            x: dotsOfcross[i].x,
+            y: dotsOfcross[i].x
+        });
+
+    };
+
+
+    /*return [
+        [{x: 60, y: 240}, {x: 90, y: 240}, {x: 120,  y: 180},  { x: 90,  y: 90 }, {x: 60,  y: 150 }, ],
+        [{x: 270,y: 240}, {x: 300,y: 240}, {x: 300,  y: 150 }, { x: 270, y: 90 }, {x: 240, y: 180 }, ],
+        [{x: 150,y: 180}, {x: 180,y: 240 },{x: 210,  y: 180 }, { x: 210, y: 90 }, {x: 180, y: 60  }, {  x: 150,  y: 90 }]
     ];*/
 }
