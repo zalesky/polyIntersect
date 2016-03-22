@@ -176,3 +176,36 @@ function intersects(fig1, fig2) { // return arr with poly's
         [{x: 150,y: 180}, {x: 180,y: 240 },{x: 210,  y: 180 }, { x: 210, y: 90 }, {x: 180, y: 60  }, {  x: 150,  y: 90 }]
     ];*/
 }
+function intersects(fig1, fig2) { // return arr with poly's
+    'use strict'
+
+    var tochki = [];
+    for (var x in fig1) {
+        tochki.push({
+            x: fig1[x].x,
+            y: fig1[x].y
+        })
+    };
+    for (var x in fig2) {
+        tochki.push({
+            x: fig2[x].x,
+            y: fig2[x].y
+        })
+    };
+
+
+    vidrizok = [{
+        x: ,
+        y:
+    }, {
+        x: ,
+        y:
+    }]
+
+http://rain.ifmo.ru/cat/data/theory/math/triangulation-2008/article.pdf
+    /*return [
+        [{x: 60, y: 240}, {x: 90, y: 240}, {x: 120,  y: 180},  { x: 90,  y: 90 }, {x: 60,  y: 150 }, ],
+        [{x: 270,y: 240}, {x: 300,y: 240}, {x: 300,  y: 150 }, { x: 270, y: 90 }, {x: 240, y: 180 }, ],
+        [{x: 150,y: 180}, {x: 180,y: 240 },{x: 210,  y: 180 }, { x: 210, y: 90 }, {x: 180, y: 60  }, {  x: 150,  y: 90 }]
+    ];*/
+}
