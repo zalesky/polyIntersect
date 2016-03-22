@@ -98,16 +98,21 @@ function intersects(fig1, fig2) { // return arr with poly's
             var k = poly2[dotPoly2] - poly2[dotPoly2 + 1], //треба знати куди рухатись(k) і з якої точки(numOfVertex)
                 numOfVertex = poly2[dotPoly2].inPoly ? dotPoly2 : dotPoly2 + 1; //num це та яка всередині
             objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex]); //додали вершину
+
             while (poly2[numOfVertex + k].inPoly) {
                 k += k;
-                objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex + k);
+                objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex + k]);
                 };
             //#todo знайти точку пересічення з fig1, мабуть починаючи з dotPoly1 і проти годинникової, щоб зійтись з точкою входу.
             // точки пересічення які є в масиві з пересіченними objWithCrossDotsWhatWeSaw виключаєм
             //може пересікатись і не лежати всередині
+            //те з якого боку лежить від прямої, залежить від номерів вершини
             };
        
         return arr;
+    };
+    function distanceBetween2Dots(a,b){
+        var dist=Math.sqrt(Math.pow((b.x-a.x),2)+Math.pow((b.y-a.y),2));
     };
 
     function figInOthFig(fig) {
