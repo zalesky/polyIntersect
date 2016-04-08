@@ -1,50 +1,11 @@
+//algorithm http://davis.wpi.edu/~matt/courses/clipping/
 function intersects(fig1, fig2) { // return arr with poly's
     'use strict'
 
-    var poly1 = fig1.slice();
-    poly1.push(poly1[0]);
-    var poly2 = fig2.slice();
-    poly2.push(poly2[0]);
-
-    function isHoverHand(poly) {
-        if (poly[1].x === poly[0].x) return true;
-        return (poly[1].x - poly[0].x) / (poly[1].y - poly[0].y) < (poly[poly.length - 1].x - poly[poly.length - 2].x) / (poly[poly.length - 1].y - poly[poly.length - 2].y);
-    };
-    //normilize poly's to HoverHand direction
-    if (!isHoverHand(poly1)) poly1.reverse();
-    if (!isHoverHand(poly2)) poly2.reverse();
-
-
-
-
-    function inPolygon(x, y, polygon) {
-        var npol = polygon.length,
-            j = npol - 1,
-            c = false;
-        for (i = 0; i < npol; i++) {
-            if ((((polygon[i].y <= y) && (y < polygon[j].y)) || ((polygon[j].y <= y) && (y < polygon[i].y))) &&
-                (x > (polygon[j].x - polygon[i].x) * (y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)) {
-                c = !c
-            }
-            j = i;
-        }
-        return c;
-    };
-
-
-
-    function changePropFigVerticesInOthFig(poly1, poly2) { //is First Fig dotes in second Fig? then change options Fig[i].inPoly false:true
-        for (var i = 0; i < poly1.length; i++) {
-            poly1[i].inPoly = inPolygon(poly1[i].x, poly1[i].y, poly2);
-        }
-    };
-
-
-    function getCoordinatesOfCrossing(a1, a2, b1, b2) {
-
+    function getCoordinatesOfCrossing(a1, a2, b1, b2) { //{x:y:},{x:y:},{x:y:},{x:y:} return {x:y:}||true||false
         var denom, a, b, num1, num2, x, y;
         denom = ((b2.y - b1.y) * (a2.x - a1.x)) - ((b2.x - b1.x) * (a2.y - a1.y));
-        if (denom == 0) return false;
+        if (denom == 0) return true;
         a = a1.y - b1.y;
         b = a1.x - b1.x;
         num1 = ((b2.x - b1.x) * a) - ((b2.y - b1.y) * b);
@@ -63,56 +24,20 @@ function intersects(fig1, fig2) { // return arr with poly's
         } else {
             return false;
         }
-    }
-
-    function createArrWithCrossCoord(poly1, poly2) {
-        var arr = [],
-            xy;
-        for (var i = 0; i < poly1.length - 1; i += 1) {
-            for (var j = 0; j < poly2.length - 1; j += 1) {
-                xy = getCoordinatesOfCrossing(poly1[i], poly1[i + 1], poly2[j], poly2[j + 1]);
-                if (xy) {
-                    alert(j)
-                    xy.dotPoly1 = i;
-                    xy.dotPoly2 = j;
-                    poly1[i].cross = [];
-                    poly1[i].cross.push(xy);
-                    poly2[j].cross = [];
-                    poly2[j].cross.push(xy);
-                    arr.push(xy);
-                    /*out.innerHTML+=xy.x+':'+xy.y+';';*/
-                    drawCircl(xy, document.querySelector('svg.base'))
-                    console.log(xy)
-                }
-            };
-        };
-        objWithResults = {};
-        objWithCrossDotsWhatWeSaw = {};
-
-        function addFinalObj(currentDot, dotPoly1, dotPoly2) {
-            if (objWithResults[dotPoly1 + 'x' + dotPoly2]) return;
-            //there is no such Polynom of A^B, so add
-            objWithResults[dotPoly1 + 'x' + dotPoly2] = [currentDot];
-            objWithCrossDotsWhatWeSaw[dotPoly1 + 'x' + dotPoly2] = true;
-            //ми на j
-            var k = poly2[dotPoly2] - poly2[dotPoly2 + 1], //треба знати куди рухатись(k) і з якої точки(numOfVertex)
-                numOfVertex = poly2[dotPoly2].inPoly ? dotPoly2 : dotPoly2 + 1; //num це та яка всередині
-            objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex]); //додали вершину
-
-            while (poly2[numOfVertex + k].inPoly) {
-                k += k;
-                objWithResults[dotPoly1 + 'x' + dotPoly2].push(poly2[numOfVertex + k]);
-                };
-            //#todo знайти точку пересічення з fig1, мабуть починаючи з dotPoly1 і проти годинникової, щоб зійтись з точкою входу.
-            // точки пересічення які є в масиві з пересіченними objWithCrossDotsWhatWeSaw виключаєм
-            //може пересікатись і не лежати всередині
-            //те з якого боку лежить від прямої, залежить від номерів вершини
-            };
-       
-        return arr;
     };
-    function distanceBetween2Dots(a,b){
-        var dist=Math.sqrt(Math.pow((b.x-a.x),2)+Math.pow((b.y-a.y),2));
+
+    function inPolygon(dot, polygon) { //return true false
+        var npol = polygon.length,
+            j = npol - 1,
+            c = false;
+        for (var i = 0; i < npol; i++) {
+            if ((((polygon[i].y <= dot.y) && (dot.y < polygon[j].y)) || ((polygon[j].y <= dot.y) && (dot.y < polygon[i].y))) &&
+                (dot.x > (polygon[j].x - polygon[i].x) * (dot.y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)) {
+                c = !c
+            }
+            j = i;
+        }
+        return c;
     };
 
     function figInOthFig(fig) {
@@ -123,89 +48,223 @@ function intersects(fig1, fig2) { // return arr with poly's
         }
     };
 
-    changePropFigVerticesInOthFig(poly1, poly2);
-    changePropFigVerticesInOthFig(poly2, poly1);
-    var dotsOfcross = createArrWithCrossCoord(poly1, poly2);
-    if (dotsOfcross.length == 0) {
-        return figInOthFig(poly1) || figInOthFig(poly2) || [];
+    function Node(vec, delta, intersection) {
+        this.vec = vec;
+        this.delta = delta || 0;
+        this.intersect = !!intersection;
     };
 
-    function createArrWithResults() {
-        var objWithResults = {},
-            nameOfCross;
+    Node.prototype = {
+        vec: null,
+        next: null,
+        next: null,
+        prev: null,
+        nextPoly: null,
+        neighbor: null,
+        intersect: null,
+        entry: null,
+        visited: false,
+        delta: 0,
+        inPoly: true,
 
-        function walkThroghDots() {
+        nextNonIntersection: function() {
+            var self = this;
+            while (self && self.intersect) {
+                self = self.next;
+            }
+            return self;
+        },
 
+        last: function() {
+            var self = this;
+            while (self.next && self.next !== this) {
+                self = self.next;
+            }
+            return self;
+        },
+
+        createLoop: function() {
+            var last = this.last();
+            last.prev.next = this;
+            this.prev = last.prev;
+        },
+
+        firstNodeOfInterest: function() {
+            var self = this;
+
+            if (self) {
+                do {
+                    self = self.next;
+                } while (self !== this && (!self.intersect || self.intersect && self.visited));
+            }
+
+            return self;
+        },
+
+        insertBetween: function(first, last) {
+            var a = first;
+            while (a !== last && a.delta < this.delta) {
+                a = a.next;
+            }
+
+            this.next = a;
+            this.prev = a.prev;
+            if (this.prev) {
+                this.prev.next = this;
+            }
+
+            this.next.prev = this;
         }
     };
 
+    function createLinkedList(vecs, vecs2) {
+        var l = vecs.length;
+        var ret, where;
+        for (var i = 0; i < l; i++) {
+            var current = vecs[i];
+            if (!ret) {
+                where = ret = new Node(current);
+                where.inPoly = ret.inPoly = inPolygon(vecs[i], vecs2);
+            } else {
+                where.next = new Node(current);
+                where.next.prev = where;
+                where = where.next;
+                where.inPoly = inPolygon(vecs[i], vecs2);
+            }
+        }
 
+        return ret;
+    };
 
-    for (var i = 0; i < dotsOfcross.length; i++) {
-        nameOfCross = dotsOfcross[i].dotPoly1 + 'x' + dotsOfcross[i].dotPoly2;
-        if (!objWithResults[nameOfCross]) {
-            objWithResults[nameOfCross] = [];
-            objWithResults[nameOfCross].push({
-                x: dotsOfcross[i].x,
-                y: dotsOfcross[i].y
-            });
+    function distance(a, b) {
+        return Math.sqrt(Math.pow((b.x - a.x), 2) + Math.pow((b.y - a.y), 2));
+    };
 
-            /*if (poly2[dotsOfcross.dotPoly2].inPoly) {} else{};*/
+    function clean(arr) {
+        var cur = arr.length - 1;
+        while (cur--) {
+            var c = arr[cur];
+            var p = arr[cur + 1];
+            if (c.x === p.x && c.y === p.y) {
+                arr.splice(cur, 1);
+            }
+        }
+        return arr;
+    };
+
+    function identifyIntersections(subjectList, clipList) {
+        var subject, clip;
+        var auxs = subjectList.last();
+        auxs.next = new Node(subjectList.vec, auxs);
+        auxs.next.prev = auxs;
+
+        var auxc = clipList.last();
+        auxc.next = new Node(clipList.vec, auxc);
+        auxc.next.prev = auxc;
+
+        var found = false;
+        for (subject = subjectList; subject.next; subject = subject.next) {
+            if (!subject.intersect) {
+                for (clip = clipList; clip.next; clip = clip.next) {
+                    if (!clip.intersect) {
+
+                        var a = subject.vec,
+                            b = subject.next.nextNonIntersection().vec,
+                            c = clip.vec,
+                            d = clip.next.nextNonIntersection().vec;
+
+                        var i = getCoordinatesOfCrossing(a, b, c, d);
+
+                        if (i && i !== true) {
+                            found = true;
+                            var iSubject = new Node(i, distance(a, i) / distance(a, b), true);
+                            var iClip = new Node(i, distance(c, i) / distance(c, d), true);
+                            iSubject.neighbor = iClip;
+                            iClip.neighbor = iSubject;
+                            iSubject.insertBetween(subject, subject.next.nextNonIntersection());
+                            iClip.insertBetween(clip, clip.next.nextNonIntersection());
+                        }
+                    }
+                }
+            }
+        }
+        return found;
+    };
+
+    function identifyIntersectionType(subjectList, clipList) {
+        var entry = true;
+        var subject;
+        for (subject = subjectList; subject.next; subject = subject.next) {
+            if (subject.intersect) {
+                subject.entry = subject.neighbor.entry = entry;
+                entry = !entry;
+            }
+        }
+    };
+
+    function collectClipResults(subjectList, clipList) {
+        subjectList.createLoop();
+        clipList.createLoop();
+
+        var crt, results = [],
+            result;
+        while ((crt = subjectList.firstNodeOfInterest()) !== subjectList) {
+            result = [];
+            for (; !crt.visited; crt = crt.neighbor) {
+
+                result.push(crt.vec);
+                var forward = crt.entry
+                while (true) {
+                    crt.visited = true;
+                    crt = forward ? crt.next : crt.prev;
+
+                    if (crt.intersect) {
+                        crt.visited = true;
+                        break;
+                    } else {
+                        result.push(crt.vec);
+                    }
+                }
+            }
+
+            results.push(clean(result));
+        }
+
+        return results;
+    };
+
+    function polygonBoolean(subjectPoly, clipPoly) {
+
+        var subjectList = createLinkedList(subjectPoly, clipPoly),
+            clipList = createLinkedList(clipPoly, subjectPoly),
+            response;
+
+        // Phase one.
+        var isects = identifyIntersections(subjectList, clipList);
+
+        if (isects) {
+            // Phase two.
+            identifyIntersectionType(subjectList, clipList);
+
+            // Phase three. collect resulting polygons
+            response = collectClipResults(subjectList, clipList);
         } else {
+            // No intersections
+            var inner = subjectList.inPoly;
+            var outer = clipList.inPoly;
 
-        };
+            if (inner) {
+                return [subjectPoly]
+            } else if (outer) {
+                return [clipPoly]
+            }
+
+        }
+
+        return response;
     };
 
+    return polygonBoolean(fig1, fig2)
+    /*console.log(polygonBoolean(fig1, fig2)) ;*/
 
-    /*console.log(dotsOfcross);*/
-    return null
-
-    var arr = [];
-    for (var i = 0, j = 0; i < dotsOfcross.length; i += 1) {
-        arr[j].push({
-            x: dotsOfcross[i].x,
-            y: dotsOfcross[i].x
-        });
-
-    };
-
-
-    /*return [
-        [{x: 60, y: 240}, {x: 90, y: 240}, {x: 120,  y: 180},  { x: 90,  y: 90 }, {x: 60,  y: 150 }, ],
-        [{x: 270,y: 240}, {x: 300,y: 240}, {x: 300,  y: 150 }, { x: 270, y: 90 }, {x: 240, y: 180 }, ],
-        [{x: 150,y: 180}, {x: 180,y: 240 },{x: 210,  y: 180 }, { x: 210, y: 90 }, {x: 180, y: 60  }, {  x: 150,  y: 90 }]
-    ];*/
-}
-function intersects(fig1, fig2) { // return arr with poly's
-    'use strict'
-
-    var tochki = [];
-    for (var x in fig1) {
-        tochki.push({
-            x: fig1[x].x,
-            y: fig1[x].y
-        })
-    };
-    for (var x in fig2) {
-        tochki.push({
-            x: fig2[x].x,
-            y: fig2[x].y
-        })
-    };
-
-
-    vidrizok = [{
-        x: ,
-        y:
-    }, {
-        x: ,
-        y:
-    }]
-
-http://rain.ifmo.ru/cat/data/theory/math/triangulation-2008/article.pdf
-    /*return [
-        [{x: 60, y: 240}, {x: 90, y: 240}, {x: 120,  y: 180},  { x: 90,  y: 90 }, {x: 60,  y: 150 }, ],
-        [{x: 270,y: 240}, {x: 300,y: 240}, {x: 300,  y: 150 }, { x: 270, y: 90 }, {x: 240, y: 180 }, ],
-        [{x: 150,y: 180}, {x: 180,y: 240 },{x: 210,  y: 180 }, { x: 210, y: 90 }, {x: 180, y: 60  }, {  x: 150,  y: 90 }]
-    ];*/
 }

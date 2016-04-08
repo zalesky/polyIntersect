@@ -6,15 +6,15 @@
 };*/
 
 
-var examples = {//second in norm direction
+/*var examples = {//second in norm direction
   first:  [{ x: 60, y: 60  }, { x: 180, y: 0   }, { x: 300, y: 60  }, { x: 300, y: 300 }, { x: 240, y: 180 }, { x: 210, y: 180 }, { x: 180, y: 240 }, { x: 150, y: 180 }, { x: 120, y: 180 }, { x: 60, y: 300 }, ],
   second: [{x: 30, y: 210 }, { x: 90, y: 90  }, { x: 150, y: 200 }, { x: 150, y: 90  }, { x: 180, y: 60  }, { x: 210, y: 90 }, { x: 210, y: 200 }, { x: 270, y: 90  }, { x: 330, y: 210 }, { x: 330, y: 240 },{ x: 30, y: 240 } ]
 
-};
-/*var examples = {//triangles
+};*/
+var examples = {//triangles
   first: [{x:20,y:20},{x:20,y:90},{x:60,y:50}],
   second:[{x:100,y:20},{x:100,y:100},{x:30,y:50}]
-}*/
+}
 
 /*var examples = {//quadrangle
   first: [{x:20,y:20},{x:20,y:100},{x:70,y:70},{x:70,y:40}],
@@ -25,13 +25,12 @@ var examples = {//second in norm direction
   second:[{x:15,y:55},{x:55,y:15},{x:80,y:40} ,{x:40,y:80}]
 }*/
 function drawPath(data, container, color) {
+
   var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   var str = 'M' + data[0].x + ',' + data[0].y + ' ';
   drawDots(data[0].x, data[0].y, 0, container, color);
-  var i=0;
   str += data.slice(1).map(function(point) {
-    i++;
-    drawDots(point.x, point.y, i, container, color);
+    drawDots(point.x, point.y, container, color);
     return 'L' + point.x + ',' + point.y;
   }).join(' ');
   str += 'L' + data[0].x + ',' + data[0].y + ' ';
@@ -40,14 +39,15 @@ function drawPath(data, container, color) {
   container.appendChild(path);
 };
 
-function drawDots(x, y, i, container, color) {
+function drawDots(x, y, container, color) {
   var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   text.setAttributeNS(null, "x", x);
   text.setAttributeNS(null, "y", y);
   text.setAttributeNS(null, "style", 'font-size: 8px;');
-  text.appendChild(document.createTextNode(x + ';' + y+'|'+i));
+  text.appendChild(document.createTextNode(x + ';' + y);
   container.appendChild(text);
 };
+
 function drawCircl(xy, container) {
   var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
   c.setAttributeNS(null, "cx", xy.x);
@@ -60,7 +60,7 @@ function drawCircl(xy, container) {
 drawPath(examples.first, document.querySelector('svg.base'), 'navy');
 drawPath(examples.second, document.querySelector('svg.base'), 'yellow');
 
-intersects(examples.first, examples.second);
-/*intersects(examples.first, examples.second).forEach(function(p) {
+/*intersects(examples.first, examples.second);*/
+intersects(examples.first, examples.second).forEach(function(p) {
   drawPath(p, document.querySelector('svg.intersections'), 'red');
-})*/
+})

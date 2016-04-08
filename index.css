@@ -38,3 +38,7 @@ svg.intersections {
   animation-duration: 5s;
   animation-iteration-count: infinite;
 }
+#coord{
+  position: fixed;
+  margin-top: -20px;
+}
