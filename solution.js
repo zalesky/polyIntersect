@@ -191,7 +191,7 @@ function intersects(fig1, fig2) { // return arr with poly's
         return found;
     };
 
-    function identifyIntersectionType(subjectList, clipList) {
+    function entryNotEntry(subjectList, clipList) {
         var entry = true;
         var subject;
         for (subject = subjectList; subject.next; subject = subject.next) {
@@ -244,7 +244,7 @@ function intersects(fig1, fig2) { // return arr with poly's
 
         if (isects) {
             // Phase two.
-            identifyIntersectionType(subjectList, clipList);
+            entryNotEntry(subjectList, clipList);
 
             // Phase three. collect resulting polygons
             response = collectClipResults(subjectList, clipList);
@@ -265,6 +265,6 @@ function intersects(fig1, fig2) { // return arr with poly's
     };
 
     return polygonBoolean(fig1, fig2)
-    /*console.log(polygonBoolean(fig1, fig2)) ;*/
+ 
 
 }

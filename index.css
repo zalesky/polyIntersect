@@ -38,7 +38,13 @@ svg.intersections {
   animation-duration: 5s;
   animation-iteration-count: infinite;
 }
-#coord{
+.utils{
   position: fixed;
-  margin-top: -20px;
+  margin-top: -30px; 
+  font: sans-serif;
+}
+label{
+  position: relative;
+  top:-1px;
+  margin-left: 20px; 
 }

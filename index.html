@@ -5,11 +5,22 @@
   <meta name="viewport" content="width=device-width">
   <meta http-equiv="Cache-Control" content="no-cache">
   <link rel="stylesheet" href="index.css">
-  <title>Kottans: intersections</title>
+  <title>K0ttans: intersections</title>
 </head>
 <body>
   <div class="container">
-  <input type="checkbox" id='coord'>
+  <div class="utils">
+    <label for="type">Type:</label>
+    <select id="type">
+      <option value="1">triangle</option>
+      <option value="2">some fig</option>
+      <option value="3">poly in poly</option>
+      <option value="4">your example</option>
+    </select>
+    <label for="coord">Show coordinates</label>   
+    <input type="checkbox" id='coord' checked> 
+    
+  </div>
     <svg class="base"></svg>
     <svg class="intersections"></svg>
   </div>
