@@ -1,5 +1,5 @@
 //algorithm http://davis.wpi.edu/~matt/courses/clipping/
-function intersects(fig1, fig2) { // return arr with poly's
+function intersect(fig1, fig2) { // return arr with poly's
     'use strict'
 
     function getCoordinatesOfCrossing(a1, a2, b1, b2) { //{x:y:},{x:y:},{x:y:},{x:y:} return {x:y:}||true||false
