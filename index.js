@@ -19,7 +19,7 @@ function paint() {
     drawPath(examples.second, document.querySelector('svg.base'), 'yellow');
 
 
-    intersects(examples.first, examples.second).forEach(function(p) {
+    intersect(examples.first, examples.second).forEach(function(p) {
         drawPath(p, document.querySelector('svg.intersections'), 'red');
     })
 }
