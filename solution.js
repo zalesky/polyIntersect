@@ -116,6 +116,15 @@ function intersect(fig1, fig2) { // return arr with poly's
             this.next.prev = this;
         }
     };
+    Node.prototype.toString = function() {
+        var str = '';
+        var self = this;
+        while (self.next && self.next !== this) {
+            str += '(x:' + self.vec.x + '; y:' + self.vec.y + ') intersect:' + self.intersect + '\n';
+            self = self.next;
+        }
+        return str;
+    };
 
     function createLinkedList(vecs, vecs2) {
         var l = vecs.length;
@@ -132,7 +141,6 @@ function intersect(fig1, fig2) { // return arr with poly's
                 where.inPoly = inPolygon(vecs[i], vecs2);
             }
         }
-
         return ret;
     };
 
@@ -216,6 +224,11 @@ function intersect(fig1, fig2) { // return arr with poly's
                 var forward = crt.entry
                 while (true) {
                     crt.visited = true;
+
+                    /* crt = crt.next.inPoly ? crt.next :
+                        crt.prev.inPoly ? crt.prev :
+                        forward ? crt.next : crt.prev;*/
+
                     crt = forward ? crt.next : crt.prev;
 
                     if (crt.intersect) {
@@ -226,10 +239,8 @@ function intersect(fig1, fig2) { // return arr with poly's
                     }
                 }
             }
-
             results.push(clean(result));
         }
-
         return results;
     };
 
@@ -258,13 +269,9 @@ function intersect(fig1, fig2) { // return arr with poly's
             } else if (outer) {
                 return [clipPoly]
             }
-
         }
-
+        console.log(subjectList.toString())
         return response;
     };
-
     return polygonBoolean(fig1, fig2)
- 
-
 }
